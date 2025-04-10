@@ -1,36 +1,25 @@
 name: Run Telegram Bot
+     on:
+       workflow_dispatch:  # 手动触发
+       schedule:
+         - cron: '*/5 * * * *'  # 每5分钟重启（规避6小时限制）
 
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: '*/5 * * * *'
-
-jobs:
-  run-bot:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-          
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install python-telegram-bot mysql-connector-python python-dotenv
-          
-      - name: Verify environment
-        run: |
-          echo "Python path: $(which python)"
-          pip list
-          
-      - name: Run Bot
-        env:
-          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-        run: python bot.py
+     jobs:
+       run-bot:
+         runs-on: ubuntu-latest
+         steps:
+           - uses: actions/checkout@v4
+           - name: Set up Python
+             uses: actions/setup-python@v4
+             with:
+               python-version: '3.10'
+           - name: Install dependencies
+             run: pip install python-telegram-bot mysql-connector-python python-dotenv
+           - name: Run Bot
+             env:
+               BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+               DB_HOST: ${{ secrets.DB_HOST }}
+               DB_USER: ${{ secrets.DB_USER }}
+               DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+               DB_NAME: ${{ secrets.DB_NAME }}
+             run: python bot.py
