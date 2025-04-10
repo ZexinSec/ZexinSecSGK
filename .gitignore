@@ -1,0 +1,4 @@
+# 忽略 .env 和缓存文件
+.env
+*.log
+__pycache__/
